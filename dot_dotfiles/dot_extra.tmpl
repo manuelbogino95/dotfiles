@@ -1,16 +1,9 @@
 # FNM
 eval "$(fnm env --use-on-cd)"
 
-# Zoxide
-eval "$(zoxide init zsh)"
-
 # fzf
 eval "$(fzf --zsh)"
 
-{{- if eq .profile "work" }}
-# rbenv
-eval "$(rbenv init - zsh)"
-{{ end }}
 # History
 HISTFILE=~/.zsh_history
 SAVEHIST=2000
