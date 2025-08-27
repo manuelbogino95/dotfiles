@@ -9,8 +9,26 @@ osascript -e 'tell application "System Preferences" to quit'
 echo "📚  Show the ~/Library folder"
 chflags nohidden ~/Library
 
-# Keyboard
+# General System Improvements
+echo "⚡  Disable the sound effects on boot"
+sudo nvram SystemAudioVolume=" "
 
+echo "⚡  Save to disk (not to iCloud) by default"
+defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+
+echo "⚡  Automatically quit printer app once the print jobs complete"
+defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
+
+echo "⚡  Disable automatic capitalization, smart dashes, period substitution and spell check"
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+
+echo "⚡  Disable 'natural' scrolling"
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+
+# Keyboard Improvements
 echo "⌨️  Set AppleEnabledInputSources (US Keyboard Layout)"
 defaults write com.apple.HIToolbox AppleEnabledInputSources -array \
   '<dict>
@@ -33,8 +51,14 @@ defaults write com.apple.HIToolbox AppleCurrentKeyboardLayoutInputSourceID -stri
 echo "⌨️  Enable keyboard navigation"
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 2
 
-# Trackpad
+echo "⌨️  Set blazingly fast keyboard repeat rate"
+defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
+echo "⌨️  Disable press-and-hold for keys in favor of key repeat"
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+
+# Trackpad Improvements
 echo "🖱️  Set scroll direction to normal"
 defaults write -g com.apple.swipescrolldirection -bool false
 
@@ -46,19 +70,65 @@ defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
 defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
 defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
 
-echo "🖱️  Disable trackpad tap to click"
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool false
-defaults write com.apple.AppleMultitouchTrackpad Clicking -bool false
+echo "🖱️  Enable tap to click for this user and for the login screen"
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 echo "🖱️  Set trackpad tracking speed"
-defaults write -g com.apple.trackpad.scaling -float 0.875
+defaults write -g com.apple.trackpad.scaling -float 2.5
 
-# Dock
+echo "🖱️  Enable three finger drag"
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
 
+# Dock Improvements
 echo "💈  Automatically hide and show the dock"
 defaults write com.apple.dock autohide -bool true
 
-# Finder
+echo "💈  Make dock icons smaller (48px)"
+defaults write com.apple.dock tilesize -int 48
+
+echo "💈  Remove the auto-hiding dock delay"
+defaults write com.apple.dock autohide-delay -float 0
+
+echo "💈  Remove the animation when hiding/showing the dock"
+defaults write com.apple.dock autohide-time-modifier -float 0
+
+echo "💈  Don't show recent applications in dock"
+defaults write com.apple.dock show-recents -bool false
+
+echo "💈  Enable spring loading for all dock items"
+defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
+
+# Finder Improvements
+echo "📁  Show hidden files by default"
+defaults write com.apple.finder AppleShowAllFiles -bool true
+
+echo "📁  Show all filename extensions"
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+echo "📁  Show status bar"
+defaults write com.apple.finder ShowStatusBar -bool true
+
+echo "📁  Show path bar"
+defaults write com.apple.finder ShowPathbar -bool true
+
+echo "📁  Display full POSIX path as Finder window title"
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+echo "📁  Keep folders on top when sorting by name"
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+
+echo "📁  When performing a search, search the current folder by default"
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+echo "📁  Disable the warning when changing a file extension"
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+echo "📁  Avoid creating .DS_Store files on network or USB volumes"
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 echo "📁  Sort Finder icons by name"
 /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist
@@ -70,14 +140,56 @@ echo "📁  Set Finder icons size"
 /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
 /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
 
-echo "📁  Set Finder preferred view style to icon"
-defaults write com.apple.finder FXPreferredViewStyle -string "icnv"
+echo "📁  Set Finder preferred view style to list view"
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+
+# Safari Improvements
+echo "🌐  Enable Safari's debug menu"
+defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+
+echo "🌐  Make Safari's search banners default to Contains instead of Starts With"
+defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
+
+echo "🌐  Enable the Develop menu and the Web Inspector in Safari"
+defaults write com.apple.Safari IncludeDevelopMenu -bool true
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+
+# Screenshots
+echo "📸  Save screenshots to the Downloads folder"
+defaults write com.apple.screencapture location -string "${HOME}/Downloads"
+
+echo "📸  Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)"
+defaults write com.apple.screencapture type -string "png"
+
+echo "📸  Disable shadow in screenshots"
+defaults write com.apple.screencapture disable-shadow -bool true
+
+# Menu Bar
+echo "📊  Show battery percentage in menu bar"
+defaults write com.apple.menuextra.battery ShowPercent -bool true
+
+# Activity Monitor
+echo "🔍  Show the main window when launching Activity Monitor"
+defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
+
+echo "🔍  Show all processes in Activity Monitor"
+defaults write com.apple.ActivityMonitor ShowCategory -int 0
+
+# TextEdit
+echo "📝  Use plain text mode for new TextEdit documents"
+defaults write com.apple.TextEdit RichText -int 0
+
+echo "📝  Open and save files as UTF-8 in TextEdit"
+defaults write com.apple.TextEdit PlainTextEncoding -int 4
+defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
 
 echo "📱  Set 'Open at login' applications"
 
 loginItems=(
   "Raycast"
   "BetterDisplay"
+  "1Password 7 - Password Manager"
 )
 
 for app in "${loginItems[@]}"; do
@@ -88,5 +200,19 @@ for app in "${loginItems[@]}"; do
     echo "❌  $app not found in /Applications"
   fi
 done
+
+echo "🔄  Restarting affected applications..."
+
+for app in "Activity Monitor" \
+	"cfprefsd" \
+	"Dock" \
+	"Finder" \
+	"Safari" \
+	"SystemUIServer"; do
+	killall "${app}" &> /dev/null || true
+done
+
+echo "✅  macOS system preferences have been configured!"
+echo "📋  Note: Some changes may require a logout/restart to take effect."
 
 {{ end -}}
