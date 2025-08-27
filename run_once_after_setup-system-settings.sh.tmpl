@@ -4,20 +4,15 @@ set -eufo pipefail
 {{- if eq .chezmoi.os "darwin" }}
 echo "🍏  Setting macOS defaults"
 
+# Close System Preferences to prevent conflicts
 osascript -e 'tell application "System Preferences" to quit'
 
 echo "📚  Show the ~/Library folder"
 chflags nohidden ~/Library
 
 # General System Improvements
-echo "⚡  Disable the sound effects on boot"
+echo "⚡  Disable the sound effects on boot (requires admin password)"
 sudo nvram SystemAudioVolume=" "
-
-echo "⚡  Save to disk (not to iCloud) by default"
-defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
-
-echo "⚡  Automatically quit printer app once the print jobs complete"
-defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 
 echo "⚡  Disable automatic capitalization, smart dashes, period substitution and spell check"
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
@@ -74,6 +69,8 @@ echo "🖱️  Enable tap to click for this user and for the login screen"
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+# Enable tap to click for login screen (requires admin)
+sudo defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true 2>/dev/null || echo "ℹ️  Could not set login screen tap-to-click (normal if not admin)"
 
 echo "🖱️  Set trackpad tracking speed"
 defaults write -g com.apple.trackpad.scaling -float 2.5
@@ -131,14 +128,14 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 echo "📁  Sort Finder icons by name"
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist
+/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set desktop icon arrangement"
+/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set folder icon arrangement"
+/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set standard icon arrangement"
 
 echo "📁  Set Finder icons size"
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist
+/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set desktop icon size"
+/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set folder icon size"
+/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set standard icon size"
 
 echo "📁  Set Finder preferred view style to list view"
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
@@ -194,8 +191,7 @@ loginItems=(
 
 for app in "${loginItems[@]}"; do
   if [ -d "/Applications/$app.app" ]; then
-    osascript -e "tell application \"System Events\" to make login item at end with properties {name: \"$app\", path: \"/Applications/$app.app\", hidden:true}"
-    echo "✅  $app added to login items"
+    osascript -e "tell application \"System Events\" to make login item at end with properties {name: \"$app\", path: \"/Applications/$app.app\", hidden:true}" 2>/dev/null && echo "✅  $app added to login items" || echo "ℹ️  Could not add $app to login items"
   else
     echo "❌  $app not found in /Applications"
   fi
