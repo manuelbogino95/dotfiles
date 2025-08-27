@@ -73,7 +73,7 @@ defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 sudo defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true 2>/dev/null || echo "ℹ️  Could not set login screen tap-to-click (normal if not admin)"
 
 echo "🖱️  Set trackpad tracking speed"
-defaults write -g com.apple.trackpad.scaling -float 2.5
+defaults write -g com.apple.trackpad.scaling -float 1
 
 echo "🖱️  Enable three finger drag"
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
