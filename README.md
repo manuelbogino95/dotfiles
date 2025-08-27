@@ -8,7 +8,7 @@
 Run the command to install the dotfiles 👇🏼
 
 ```sh
-curl -sfL https://raw.githubusercontent.com/manuelbogino95/dotfiles/master/.setup.sh | bash
+curl -sfL https://raw.githubusercontent.com/manuelbogino95/dotfiles/main/.setup.sh | bash
 ```
 
 If you already ran the command before, you can use the alias:
