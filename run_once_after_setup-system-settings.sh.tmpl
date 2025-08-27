@@ -73,10 +73,6 @@ defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 echo "🖱️  Set trackpad tracking speed"
 defaults write -g com.apple.trackpad.scaling -float 1
 
-echo "🖱️  Enable three finger drag"
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
-defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
-
 # Dock Improvements
 echo "💈  Automatically hide and show the dock"
 defaults write com.apple.dock autohide -bool true
@@ -92,9 +88,6 @@ defaults write com.apple.dock autohide-time-modifier -float 0
 
 echo "💈  Don't show recent applications in dock"
 defaults write com.apple.dock show-recents -bool false
-
-echo "💈  Enable spring loading for all dock items"
-defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
 
 # Finder Improvements
 echo "📁  Show hidden files by default"
@@ -128,11 +121,6 @@ echo "📁  Avoid creating .DS_Store files on network or USB volumes"
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
-echo "📁  Sort Finder icons by name"
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set desktop icon arrangement"
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set folder icon arrangement"
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy name" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set standard icon arrangement"
-
 echo "📁  Set Finder icons size"
 /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set desktop icon size"
 /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 64" ~/Library/Preferences/com.apple.finder.plist 2>/dev/null || echo "ℹ️  Could not set folder icon size"
@@ -153,15 +141,27 @@ defaults write com.apple.screencapture disable-shadow -bool true
 
 # Menu Bar Improvements
 echo "📊  Show battery percentage in menu bar"
-defaults write com.apple.menuextra.battery ShowPercent -bool true
+if [[ $(sw_vers -productVersion) == 11.* ]] || [[ $(sw_vers -productVersion) == 12.* ]] || [[ $(sw_vers -productVersion) == 13.* ]] || [[ $(sw_vers -productVersion) == 14.* ]]; then
+    echo "ℹ️  Battery percentage must be enabled manually in System Preferences > Dock & Menu Bar > Battery"
+else
+    defaults write com.apple.menuextra.battery ShowPercent -bool true
+fi
 
 echo "📶  Show Bluetooth icon in menu bar"
-defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
+if [[ $(sw_vers -productVersion) == 11.* ]] || [[ $(sw_vers -productVersion) == 12.* ]] || [[ $(sw_vers -productVersion) == 13.* ]] || [[ $(sw_vers -productVersion) == 14.* ]]; then
+    echo "ℹ️  Bluetooth icon must be enabled manually in System Preferences > Dock & Menu Bar > Bluetooth"
+else
+    defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
+fi
 
 echo "👤  Show user switch (fast user switching) in menu bar"
-sudo defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool true
-sudo defaults write /Library/Preferences/com.apple.loginwindow.plist SHOWFULLNAME -bool true
-defaults write com.apple.controlcenter "NSStatusItem Visible UserSwitcher" -bool true
+if [[ $(sw_vers -productVersion) == 11.* ]] || [[ $(sw_vers -productVersion) == 12.* ]] || [[ $(sw_vers -productVersion) == 13.* ]] || [[ $(sw_vers -productVersion) == 14.* ]]; then
+    echo "ℹ️  User switcher must be enabled manually in System Preferences > Dock & Menu Bar > User"
+else
+    sudo defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool true
+    sudo defaults write /Library/Preferences/com.apple.loginwindow.plist SHOWFULLNAME -bool true
+    defaults write com.apple.controlcenter "NSStatusItem Visible UserSwitcher" -bool true
+fi
 
 # Activity Monitor
 echo "🔍  Show the main window when launching Activity Monitor"
