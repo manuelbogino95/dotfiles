@@ -65,12 +65,10 @@ defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
 defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
 defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
 
-echo "🖱️  Enable tap to click for this user and for the login screen"
+echo "🖱️  Enable tap to click for this user"
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-# Enable tap to click for login screen (requires admin)
-sudo defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true 2>/dev/null || echo "ℹ️  Could not set login screen tap-to-click (normal if not admin)"
 
 echo "🖱️  Set trackpad tracking speed"
 defaults write -g com.apple.trackpad.scaling -float 1
