@@ -43,7 +43,6 @@ if [ -d "$HOME/.local/share/chezmoi/.git" ]; then
   chezmoi update
   echo "✅  Chezmoi updated"
 else
-  chezmoi init manuelbogino95
-  chezmoi apply
+  chezmoi init --apply manuelbogino95
   echo "✅  Chezmoi initialized"
 fi
