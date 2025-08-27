@@ -111,6 +111,12 @@ defaults write com.apple.finder ShowStatusBar -bool true
 echo "📁  Show path bar"
 defaults write com.apple.finder ShowPathbar -bool true
 
+echo "📁  Show toolbar"
+defaults write com.apple.finder ShowToolbar -bool true
+
+echo "📁  Hide recent files in Finder sidebar"
+defaults write com.apple.finder ShowRecentTags -bool false
+
 echo "📁  Display full POSIX path as Finder window title"
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 
@@ -140,18 +146,6 @@ echo "📁  Set Finder icons size"
 echo "📁  Set Finder preferred view style to list view"
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 
-# Safari Improvements
-echo "🌐  Enable Safari's debug menu"
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-
-echo "🌐  Make Safari's search banners default to Contains instead of Starts With"
-defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
-
-echo "🌐  Enable the Develop menu and the Web Inspector in Safari"
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
-
 # Screenshots
 echo "📸  Save screenshots to the Downloads folder"
 defaults write com.apple.screencapture location -string "${HOME}/Downloads"
@@ -162,9 +156,17 @@ defaults write com.apple.screencapture type -string "png"
 echo "📸  Disable shadow in screenshots"
 defaults write com.apple.screencapture disable-shadow -bool true
 
-# Menu Bar
+# Menu Bar Improvements
 echo "📊  Show battery percentage in menu bar"
 defaults write com.apple.menuextra.battery ShowPercent -bool true
+
+echo "📶  Show Bluetooth icon in menu bar"
+defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
+
+echo "👤  Show user switch (fast user switching) in menu bar"
+sudo defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool true
+sudo defaults write /Library/Preferences/com.apple.loginwindow.plist SHOWFULLNAME -bool true
+defaults write com.apple.controlcenter "NSStatusItem Visible UserSwitcher" -bool true
 
 # Activity Monitor
 echo "🔍  Show the main window when launching Activity Monitor"
