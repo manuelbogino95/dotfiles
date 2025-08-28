@@ -31,8 +31,19 @@ else
   echo "✅  oh-my-zsh installed successfully."
 fi
 
-echo "⚪️  Installing Chezmoi"
-brew install chezmoi
+if which -s "chezmoi"; then
+  echo "✅  Chezmoi is already installed."
+else
+  echo "⚪️  Installing Chezmoi"
+  brew install chezmoi
+fi
 
-chezmoi init --apply manuelbogino95
-echo "✅  Chezmoi initialized"
+if [ -d "$HOME/.local/share/chezmoi/.git" ]; then
+  echo "ℹ️  Chezmoi already initialized, pulling latest changes..."
+  chezmoi update
+  echo "✅  Chezmoi updated"
+else
+  chezmoi init manuelbogino95
+  chezmoi apply
+  echo "✅  Chezmoi initialized"
+fi

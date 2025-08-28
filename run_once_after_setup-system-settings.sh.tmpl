@@ -102,17 +102,8 @@ defaults write com.apple.finder ShowPathbar -bool true
 echo "📁  Show toolbar"
 defaults write com.apple.finder ShowToolbar -bool true
 
-echo "📁  Hide recent files in Finder sidebar"
-defaults write com.apple.finder ShowRecentTags -bool false
-
 echo "📁  Keep folders on top when sorting by name"
 defaults write com.apple.finder _FXSortFoldersFirst -bool true
-
-echo "📁  When performing a search, search the current folder by default"
-defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-
-echo "📁  Disable the warning when changing a file extension"
-defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
 echo "📁  Avoid creating .DS_Store files on network or USB volumes"
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
@@ -135,30 +126,6 @@ defaults write com.apple.screencapture type -string "png"
 
 echo "📸  Disable shadow in screenshots"
 defaults write com.apple.screencapture disable-shadow -bool true
-
-# Menu Bar Improvements
-echo "📊  Show battery percentage in menu bar"
-if [[ $(sw_vers -productVersion) == 11.* ]] || [[ $(sw_vers -productVersion) == 12.* ]] || [[ $(sw_vers -productVersion) == 13.* ]] || [[ $(sw_vers -productVersion) == 14.* ]]; then
-    echo "ℹ️  Battery percentage must be enabled manually in System Preferences > Dock & Menu Bar > Battery"
-else
-    defaults write com.apple.menuextra.battery ShowPercent -bool true
-fi
-
-echo "📶  Show Bluetooth icon in menu bar"
-if [[ $(sw_vers -productVersion) == 11.* ]] || [[ $(sw_vers -productVersion) == 12.* ]] || [[ $(sw_vers -productVersion) == 13.* ]] || [[ $(sw_vers -productVersion) == 14.* ]]; then
-    echo "ℹ️  Bluetooth icon must be enabled manually in System Preferences > Dock & Menu Bar > Bluetooth"
-else
-    defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
-fi
-
-echo "👤  Show user switch (fast user switching) in menu bar"
-if [[ $(sw_vers -productVersion) == 11.* ]] || [[ $(sw_vers -productVersion) == 12.* ]] || [[ $(sw_vers -productVersion) == 13.* ]] || [[ $(sw_vers -productVersion) == 14.* ]]; then
-    echo "ℹ️  User switcher must be enabled manually in System Preferences > Dock & Menu Bar > User"
-else
-    sudo defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool true
-    sudo defaults write /Library/Preferences/com.apple.loginwindow.plist SHOWFULLNAME -bool true
-    defaults write com.apple.controlcenter "NSStatusItem Visible UserSwitcher" -bool true
-fi
 
 # Activity Monitor
 echo "🔍  Show the main window when launching Activity Monitor"
@@ -197,9 +164,11 @@ for app in "Activity Monitor" \
 	"Dock" \
 	"Finder" \
 	"Safari" \
-	"SystemUIServer"; do
+	"ControlCenter"; do
 	killall "${app}" &> /dev/null || true
 done
+
+echo "✅  Applications restarted"
 
 echo "✅  macOS system preferences have been configured!"
 echo "📋  Note: Some changes may require a logout/restart to take effect."
