@@ -1,0 +1,79 @@
+#!/bin/bash
+set -eufo pipefail
+
+{{- if eq .chezmoi.os "darwin" }}
+echo "  Setting up Cursor/VS Code configuration..."
+
+# Get the source directory from chezmoi
+SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+
+# Wait for Cursor to be fully installed
+if [ ! -d "/Applications/Cursor.app" ]; then
+  echo "❌  Cursor not found. Please install it first."
+  exit 1
+fi
+
+# Create necessary directories
+cursorConfigDir="$HOME/Library/Application Support/Cursor/User"
+mkdir -p "$cursorConfigDir"
+
+echo "📁  Creating Cursor configuration directory..."
+
+# Copy settings and keybindings
+if [ -f "$SOURCE_DIR/dot_config/cursor/settings.json" ]; then
+  cp "$SOURCE_DIR/dot_config/cursor/settings.json" "$cursorConfigDir/"
+  echo "✅  Cursor settings applied"
+else
+  echo "ℹ️  No custom settings found, using defaults"
+fi
+
+if [ -f "$SOURCE_DIR/dot_config/cursor/keybindings.json" ]; then
+  cp "$SOURCE_DIR/dot_config/cursor/keybindings.json" "$cursorConfigDir/"
+  echo "✅  Cursor keybindings applied"
+else
+  echo "ℹ️  No custom keybindings found, using defaults"
+fi
+
+# Install extensions
+if [ -f "$SOURCE_DIR/dot_config/cursor/extensions.txt" ]; then
+  echo "  Installing Cursor extensions..."
+  
+  # Read extensions and install them
+  while IFS= read -r extension; do
+    # Skip comments and empty lines
+    if [[ "$extension" =~ ^[[:space:]]*#.*$ ]] || [[ -z "${extension// }" ]]; then
+      continue
+    fi
+    
+    # Extract extension ID (remove any trailing comments)
+    extensionId=$(echo "$extension" | sed 's/#.*$//' | xargs)
+    
+    if [ -n "$extensionId" ]; then
+      echo "📦  Installing: $extensionId"
+      /Applications/Cursor.app/Contents/Resources/app/bin/code --install-extension "$extensionId" || echo "⚠️  Failed to install: $extensionId"
+    fi
+  done < "$SOURCE_DIR/dot_config/cursor/extensions.txt"
+  
+  echo "✅  Cursor extensions installation completed"
+else
+  echo "ℹ️  No extensions list found"
+fi
+
+# Also set up VS Code for compatibility
+vscodeConfigDir="$HOME/Library/Application Support/Code/User"
+mkdir -p "$vscodeConfigDir"
+
+if [ -f "$SOURCE_DIR/dot_config/cursor/settings.json" ]; then
+  cp "$SOURCE_DIR/dot_config/cursor/settings.json" "$vscodeConfigDir/"
+  echo "✅  VS Code settings applied"
+fi
+
+if [ -f "$SOURCE_DIR/dot_config/cursor/keybindings.json" ]; then
+  cp "$SOURCE_DIR/dot_config/cursor/keybindings.json" "$vscodeConfigDir/"
+  echo "✅  VS Code keybindings applied"
+fi
+
+echo "🎉  Cursor/VS Code setup completed!"
+echo "  Restart Cursor to see all changes take effect."
+
+{{ end -}}

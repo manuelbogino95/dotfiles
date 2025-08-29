@@ -1,0 +1,18 @@
+# Core Development
+bradlc.vscode-tailwindcss
+dbaeumer.vscode-eslint
+esbenp.prettier-vscode
+ms-vscode.vscode-typescript-next
+
+# Git & Collaboration
+eamodio.gitlens
+
+# UI & Icons
+zhuangtongfa.material-theme
+pkief.material-icon-theme
+
+# Next.js & React
+formulahendry.auto-rename-tag
+
+# Database & API
+prisma.prisma
