@@ -1,7 +1,7 @@
 # .exports
 
 # Code as default editor.
-export EDITOR='code --wait'
+export EDITOR='nvim'
 
 # Language
 export LC_ALL=en_US.UTF-8
