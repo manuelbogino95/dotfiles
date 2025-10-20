@@ -22,4 +22,4 @@ export EZA_COLORS='di=1;34'
 export COMPOSE_BAKE='false'
 
 # Path
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+export PATH="/opt/homebrew/bin:/opt/homebrew/opt/postgresql@15/bin:$PATH"
